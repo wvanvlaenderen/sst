@@ -56,7 +56,7 @@ export interface AppDeployProps {
 
   readonly buildDir?: string;
   readonly skipBuild?: boolean;
-  readonly esbuildConfig?: string;
+  readonly account?: string;
   readonly bootstrapAssets?: Bootstrap.Assets;
   readonly debugEndpoint?: string;
   readonly debugBucketArn?: string;
@@ -107,8 +107,6 @@ export class App extends cdk.App {
   public readonly account: string;
   /** @internal */
   public readonly buildDir: string;
-  /** @internal */
-  public readonly esbuildConfig?: string;
   /** @internal */
   public readonly bootstrapAssets: Bootstrap.Assets;
   /** @internal */
@@ -177,8 +175,8 @@ export class App extends cdk.App {
     this.name = deployProps.name || "my-app";
     this.region =
       deployProps.region || process.env.CDK_DEFAULT_REGION || "us-east-1";
-    this.account = process.env.CDK_DEFAULT_ACCOUNT || "my-account";
-    this.esbuildConfig = deployProps.esbuildConfig;
+    this.account =
+      deployProps.account || process.env.CDK_DEFAULT_ACCOUNT || "my-account";
     this.bootstrapAssets = deployProps.bootstrapAssets || {};
     this.buildDir = deployProps.buildDir || ".build";
     this.skipBuild = deployProps.skipBuild || false;
@@ -424,7 +422,7 @@ export class App extends cdk.App {
     if (current instanceof cdk.CfnResource) {
       current.applyRemovalPolicy(
         cdk.RemovalPolicy[
-        policy.toUpperCase() as keyof typeof cdk.RemovalPolicy
+          policy.toUpperCase() as keyof typeof cdk.RemovalPolicy
         ]
       );
     }
@@ -492,7 +490,7 @@ export class App extends cdk.App {
   private createTypesFile() {
     fs.removeSync("node_modules/@types/serverless-stack__node");
     fs.mkdirSync("node_modules/@types/serverless-stack__node", {
-      recursive: true,
+      recursive: true
     });
     fs.writeFileSync(
       "node_modules/@types/serverless-stack__node/index.d.ts",
